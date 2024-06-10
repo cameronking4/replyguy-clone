@@ -1,4 +1,4 @@
-# Opensource Reply Guy
+# Open-source Reply Guy
 
 Find posts online and promote your product / service naturally using AI.
 
