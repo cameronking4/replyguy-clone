@@ -1,12 +1,14 @@
-# Node.js Express template
+# Opensource Reply Guy
 
-This is a Node.js Express project with an HTTP server.
-
-Add your [configuration](https://codesandbox.io/docs/projects/learn/setting-up/tasks) to optimize it for [CodeSandbox](https://codesandbox.io).
+Find posts online and promote your product / service naturally using AI.
 
 ## How does this work?
 
-We run `yarn start` to start an HTTP server that runs on http://localhost:8080. You can open new or existing devtools with the + button next to the devtool tabs.
+We run `yarn start` to start an HTTP server that runs on http://localhost:3000. You can search keywords or phrases to find in posts on a certain platform. We will generate a suggestion to post to upsell your product or service organically.
+
+## ToDO
+[]  Respond to post using a dedicated profile.
+[x] Implement key word retrieval for Twitter posts, Linkedin posts, & Reddit posts.
 
 ## Resources
 
