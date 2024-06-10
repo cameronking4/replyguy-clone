@@ -51,8 +51,9 @@ export async function GET(req: NextRequest) {
     console.log(`${platform} Results:`, results);
 
     return NextResponse.json(results, { status: 200 });
-  } catch (error) {
-    console.error(`Error fetching ${platform} data:`, error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Platform scrape error occurred";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }

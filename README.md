@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Opensource alternative to replyguy.com - Gain organic sales by replying to posts on social media using AI.
+
+(1/2) Retrieve posts from various platforms using key words - DONE kinda. 
+
+(2/2) Generate OpenAI Respone & Reply to post using dedicated profile - IN PROGRESS). 
 
 ## Getting Started
 
