@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
 
 const serpApiKey = process.env.SERP_API_KEY;
 
@@ -18,7 +18,8 @@ interface SerpApiResponse {
   }>;
 }
 
-app.use(express.static("public"));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, "public")));
 
 // Serve the search form
 app.get("/", (req: Request, res: Response) => {
@@ -37,7 +38,7 @@ app.get("/search", async (req: Request, res: Response) => {
   const safe = (req.query.safe as string) || "off";
   const timeRange = req.query.tbs as string;
   const sort = req.query.sort as string;
-  let searchQuery = `${keywords} site:${platform}`;
+  const searchQuery = `${keywords} site:${platform}`;
 
   try {
     const response = await axios.get<SerpApiResponse>(
@@ -63,46 +64,52 @@ app.get("/search", async (req: Request, res: Response) => {
     console.log(`${platform} Results:`, results);
 
     // Render results as HTML
-    res.send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Search Results</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .result { margin-bottom: 20px; }
-          .result h3 { margin: 0; }
-          .result a { color: blue; text-decoration: none; }
-          .form-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
-          .form-container input, .form-container select { width: 100%; padding: 10px; margin: 5px 0; }
-          .form-container button { padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        </style>
-      </head>
-      <body>
-        <div class="form-container">
-          <h1>Search Results for "${keywords}" on ${platform}</h1>
-          ${results
-            .map(
-              (result) => `
-            <div class="result">
-              <h3><a href="${result.link}" target="_blank">${result.title}</a></h3>
-              <p>${result.snippet}</p>
-            </div>
-          `,
-            )
-            .join("")}
-          <button onclick="history.back()">Back to Search</button>
-        </div>
-      </body>
-      </html>
-    `);
+    res.send(renderResultsPage(keywords, platform, results));
   } catch (error) {
     console.error(`Error fetching ${platform} data:`, error);
     res.status(500).send(`Error fetching ${platform} data`);
   }
 });
+
+const renderResultsPage = (
+  keywords: string,
+  platform: string,
+  results: Array<{ title: string; link: string; snippet: string }>,
+) => `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .result { margin-bottom: 20px; }
+      .result h3 { margin: 0; }
+      .result a { color: blue; text-decoration: none; }
+      .form-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+      .form-container input, .form-container select { width: 100%; padding: 10px; margin: 5px 0; }
+      .form-container button { padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>Search Results for "${keywords}" on ${platform}</h1>
+      ${results
+        .map(
+          (result) => `
+        <div class="result">
+          <h3><a href="${result.link}" target="_blank">${result.title}</a></h3>
+          <p>${result.snippet}</p>
+        </div>
+      `,
+        )
+        .join("")}
+      <button onclick="history.back()">Back to Search</button>
+    </div>
+  </body>
+  </html>
+`;
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
