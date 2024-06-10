@@ -16,7 +16,7 @@ interface SerpApiResponse {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || "";
+  const q = searchParams.get("keywords") || "";
   const platform = searchParams.get("platform") || "";
   const num = parseInt(searchParams.get("num") || "10");
   const location = searchParams.get("location") || "";
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
       {
         params: {
           engine: "google",
-          q: q + ` site:${platform}`,
+          q: `site:${platform} ${q}`,
           api_key: serpApiKey,
           num: num,
           location: location,
