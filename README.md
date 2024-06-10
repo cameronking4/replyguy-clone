@@ -1,6 +1,7 @@
 Opensource alternative to replyguy.com - Gain organic sales by replying to posts on social media using AI.
 
 (1/2) Retrieve posts from various platforms using key words - DONE. 
+
 (2/2) Reply to post using dedicated profile - IN PROGRESS). 
 
 ## Getting Started
