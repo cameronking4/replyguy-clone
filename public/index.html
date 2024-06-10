@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .form-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    .form-container input, .form-container select { width: 100%; padding: 10px; margin: 5px 0; }
+    .form-container button { padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Search for Posts</h1>
+    <form action="/search" method="get">
+      <label for="keywords">Keywords:</label>
+      <input type="text" id="keywords" name="keywords" required>
+      
+      <label for="platform">Platform:</label>
+      <select id="platform" name="platform">
+        <option value="twitter.com">Twitter</option>
+        <option value="reddit.com">Reddit</option>
+        <option value="linkedin.com">LinkedIn</option>
+      </select>
+
+      <label for="num">Number of Results:</label>
+      <input type="number" id="num" name="num" min="1" max="100" value="10">
+
+      <label for="location">Location (optional):</label>
+      <input type="text" id="location" name="location">
+
+      <label for="device">Device:</label>
+      <select id="device" name="device">
+        <option value="desktop">Desktop</option>
+        <option value="mobile">Mobile</option>
+        <option value="tablet">Tablet</option>
+      </select>
+
+      <label for="hl">Language:</label>
+      <input type="text" id="hl" name="hl" value="en">
+
+      <label for="gl">Country:</label>
+      <input type="text" id="gl" name="gl" value="us">
+
+      <label for="safe">Safe Search:</label>
+      <select id="safe" name="safe">
+        <option value="off">Off</option>
+        <option value="active">Active</option>
+        <option value="medium">Medium</option>
+      </select>
+
+      <label for="tbs">Time Range (optional):</label>
+      <input type="text" id="tbs" name="tbs" placeholder="e.g., qdr:h, qdr:d">
+
+      <label for="sort">Sort By (optional):</label>
+      <input type="text" id="sort" name="sort" placeholder="e.g., date">
+
+      <button type="submit">Search</button>
+    </form>
+  </div>
+</body>
+</html>
