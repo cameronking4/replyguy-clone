@@ -1,0 +1,18 @@
+{
+  "functions": {
+    "app/api/**/*": {
+      "maxDuration": 300
+    },
+    "app/**/*": {
+      "maxDuration": 300
+    }
+  },
+  "crons": [{
+    "path": "/api/cron/campaign/comment",
+    "schedule": "0 6 * * *"
+  },
+  {
+    "path": "/api/cron/campaign/post",
+    "schedule": "0 6 * * *"
+    }]
+  }

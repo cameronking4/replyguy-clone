@@ -1,0 +1,393 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map(name: "accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
+
+  accounts Account[]
+  sessions Session[]
+  linkedinUsers LinkedInUser[]
+  linkedinTokens LinkedInToken[] 
+  twitterTokens TwitterToken[]
+  twitterProfiles TwitterProfile[] 
+  oAuthStates   OAuthState[]
+  linkedInStates LinkedInState[]
+  campaigns     Campaign[]
+  notifications Notification[]   
+  comments      Comment[] 
+  posts         Post[]
+  activityLogs  ActivityLog[]
+
+
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+
+  @@map(name: "users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map(name: "verification_tokens")
+}
+
+
+
+model TwitterToken {
+  id            String   @id @default(cuid())
+  userId        String
+  accessToken   String   @db.Text
+  refreshToken  String   @db.Text
+  expiresAt     DateTime
+  scope         String?
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "twitter_tokens")
+}
+
+model TwitterProfile {
+  id                  String   @id @default(cuid())
+  userId              String
+  twitterId           String   
+  username            String
+  name                String
+  description         String?
+  profileImageUrl     String?
+  verified            Boolean
+  location            String?
+  followersCount      Int
+  followingCount      Int
+  tweetCount          Int
+  listedCount         Int
+  likeCount           Int
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, twitterId])
+  @@index([userId])
+  @@map(name: "twitter_profiles")
+}
+
+model OAuthState {
+  id            String   @id @default(cuid())
+  userId        String
+  state         String   @unique
+  codeVerifier  String
+  expiresAt     DateTime
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "oauth_states")
+}
+
+model LinkedInToken {
+  id           String   @id @default(cuid())
+  userId       String
+  accessToken  String   @db.Text
+  expiresIn    Int
+  scope        String?
+  tokenType    String?
+  idToken      String?  @db.Text
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "linkedin_tokens")
+}
+
+model LinkedInState {
+  id           String   @id @default(cuid())
+  userId       String
+  state        String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "linkedin_states")
+}
+
+
+model LinkedInUser {
+  id             String   @id @default(cuid())
+  userId         String
+  sub            String   @unique
+  email_verified Boolean
+  name           String
+  given_name     String
+  family_name    String
+  email          String
+  picture        String?
+  locale_country String
+  locale_language String
+  createdAt      DateTime @default(now()) @map(name: "created_at")
+  updatedAt      DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map(name: "linkedin_users")
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  userId      String
+  category    String
+  name        String
+  businessUrl String
+  description String   @db.Text
+
+  autoPilot   Boolean  @default(false)
+
+  voice       String?
+  tone        String? 
+  personality String?  @db.Text
+
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @default(now()) @map(name: "updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts       Post[]
+  notifications Notification[] 
+  keywords Keyword[]
+  postPreferences PostPreference?
+  activityLogs ActivityLog[]
+
+
+  @@index([userId])
+  @@map(name: "campaigns")
+}
+
+// Notification model
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  campaignId  String
+  message     String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @default(now()) @map(name: "updated_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([campaignId])
+  @@map(name: "notifications")
+}
+
+
+model Keyword {
+  id          String   @id @default(cuid())
+  campaignId  String
+  keyword     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map(name: "keywords")
+}
+
+model PostPreference {
+  id                   String   @id @default(cuid())
+  campaignId           String   @unique
+  enableTwitter        Boolean  @default(true)
+  enableLinkedin       Boolean  @default(true)
+  enableReddit         Boolean  @default(true)
+  postingFrequency     String   @default("daily")
+  postsPerFrequency    Int      @default(1)
+  createdAt            DateTime @default(now()) @map(name: "created_at")
+  updatedAt            DateTime @default(now()) @map(name: "updated_at")
+
+  campaign             Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@map(name: "post_preferences")
+}
+
+enum Platform {
+  TWITTER
+  LINKEDIN
+  REDDIT
+}
+
+enum CommentStatus  {
+  PENDING
+  POSTED
+  FAILED
+}
+model Post {
+  id              String   @id @default(cuid())
+  campaignId      String
+  platform        Platform // 'LINKEDIN', 'TWITTER', 'REDDIT'
+  content         Json     // JSON to store platform-specific post details
+  status          CommentStatus  @default(PENDING) // 'PENDING', 'POSTED', 'FAILED'
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+
+  userId          String   // Add this line to associate with User model
+  batchId         String?  // Optional: Track batch operations
+
+  campaign        Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  comments        Comment[]
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  twitterPost     TwitterPost?
+  linkedinPost    LinkedInPost?
+  redditPost      RedditPost?
+
+  @@index([campaignId])
+  @@index([userId])
+  @@index([platform])
+  @@map(name: "posts")
+}
+
+model TwitterPost {
+  id              String   @id @default(cuid())
+  url             String
+  full_text       String
+  retweet_count   Int
+  favorite_count  Int
+  created_at      DateTime
+  post            Post     @relation(fields: [id], references: [id])
+
+  @@map(name: "twitter_posts")
+}
+
+model LinkedInPost {
+  id              String   @id @default(cuid())
+  content         String
+  created_at      DateTime
+  visibility      String?
+  post            Post     @relation(fields: [id], references: [id])
+
+  @@map(name: "linkedin_posts")
+}
+
+model RedditPost {
+  id              String   @id @default(cuid())
+  title           String
+  url             String
+  created_at      DateTime
+  score           Int
+  post            Post     @relation(fields: [id], references: [id])
+
+  @@map(name: "reddit_posts")
+}
+
+// Comment model
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  content   String   @db.Text
+  status    CommentStatus  @default(PENDING)
+
+  responseMessage String?       // Optional message about the comment status (e.g., error message)
+  externalCommentId String?     // ID of the comment on the external platform where posted, if available
+
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([userId])
+  @@map(name: "comments")
+}
+
+enum ActivityType {
+  REPLY_SENT
+  CAMPAIGN_CREATED
+  AUTOPILOT_ACTIVATED
+  AUTOPILOT_DEACTIVATED
+  CAMPAIGN_UPDATED
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  campaignId  String?
+  type        ActivityType
+  message     String   @db.Text 
+  status      String   // e.g., "Success", "Failed"
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign    Campaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([campaignId])
+  @@map(name: "activity_logs")
+}
