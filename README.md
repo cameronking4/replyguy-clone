@@ -1,32 +1,10 @@
-<a href="https://next-saas-stripe-starter.vercel.app">
+# BuzzDaddy (ReplyGuy Clone)
+Generate buzz about your product, startup, channel and more with AI generated comments! Set keywords to scrape posts across X, Linkedin & Reddit and respond organically while promoting whatever you want to promote. Use the AI agent to automate your UGC promotion daily. UGC converts better than paid ads!
+
+<a href="https:/buzzdaddy.ai">
   <img alt="SaaS Starter" src="public/og.jpg">
   <h1 align="center"BuzzData</h1>
 </a>
-
-<p align="center">
-  Start at full speed with SaaS Starter !
-</p>
-
-<p align="center">
-  <a href="https://twitter.com/miickasmt">
-    <img src="https://img.shields.io/twitter/follow/miickasmt?style=flat&label=miickasmt&logo=twitter&color=0bf&logoColor=fff" alt="Mickasmt Twitter follower count" />
-  </a>
-</p>
-
-<p align="center">
-  <a href="#introduction"><strong>Introduction</strong></a> ·
-  <a href="#installation"><strong>Installation</strong></a> ·
-  <a href="#tech-stack--features"><strong>Tech Stack + Features</strong></a> ·
-  <a href="#author"><strong>Author</strong></a> ·
-  <a href="#credits"><strong>Credits</strong></a>
-</p>
-<br/>
-
-## Introduction
-
-Empower your next project with the stack of Next.js 14, Prisma, Planetscale, Auth.js, Resend, React Email, Shadcn/ui, and Stripe.
-<br/>
-All seamlessly integrated with the SaaS Starter to accelerate your development and saas journey.
 
 ## Installation
 
